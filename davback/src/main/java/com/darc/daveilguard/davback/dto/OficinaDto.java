@@ -14,6 +14,10 @@ public class OficinaDto {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getProvincia() {
         return provincia;
     }

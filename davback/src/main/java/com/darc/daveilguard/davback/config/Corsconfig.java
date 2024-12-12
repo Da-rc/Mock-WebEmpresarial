@@ -17,12 +17,12 @@ public class Corsconfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry){
-                if (allowedOrigins == null) {
+                if (allowedOrigins == null || allowedOrigins.isEmpty()) {
                     throw new IllegalArgumentException("CORS_ALLOWED_ORIGINS is not configured.");
                 }
                 registry.addMapping("/**")
                         .allowedOrigins(allowedOrigins.split(","))
-                        .allowedMethods("GET")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }

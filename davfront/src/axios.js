@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-console.log(process.env.VUE_APP_API_URL);
+import { auth } from '@/firebase';
 
 const axiosInstance = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
@@ -9,6 +9,20 @@ const axiosInstance = axios.create({
         'Content-Type': 'application/json',
     }
 })
+
+axiosInstance.interceptors.request.use(
+    async (config) => {
+        const user = auth.currentUser;
+        if (user) {
+            const token = await user.getIdToken();
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export const getAllOficinas = () => axiosInstance.get(`/oficinas`);
 export const getAllEmpleados = () => axiosInstance.get(`/empleados`);

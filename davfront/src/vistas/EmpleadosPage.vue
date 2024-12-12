@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3>Empleados</h3>
+    <button @click="openPopup" class="add-button">Añadir Empleado</button>
     <table>
       <thead>
       <tr>
@@ -9,6 +10,7 @@
         <th>DNI</th>
         <th>Área</th>
         <th>Localización Oficina</th>
+        <th>Acciones</th>
       </tr>
       </thead>
       <tbody>
@@ -17,21 +19,39 @@
         <td>{{ empleado.apellidos }}</td>
         <td>{{ empleado.dni }}</td>
         <td>{{ empleado.area }}</td>
-        <td>{{ empleado.oficina.provincia }}</td>
+        <td>{{ empleado.oficina && empleado.oficina.provincia ? empleado.oficina.provincia : '' }}</td>
+        <td>
+          <button @click="editEmpleado(empleado.id)">Editar</button>
+          <button @click="deleteEmpleado(empleado.id)">Eliminar</button>
+        </td>
       </tr>
       </tbody>
     </table>
+
+    <crear-empleado-popup
+        v-if="showPopup"
+        :isVisible="showPopup"
+        :onClose="closePopup"
+        @refresh="fetchEmpleados"
+    />
+
   </div>
 </template>
 
 <script>
-import { getAllEmpleados } from '@/axios';
+import { getAllEmpleados} from '@/axios';
+import CrearEmpleadoPopup from '../components/CrearEmpleadoPopup.vue';
 
 export default {
   name: 'EmpleadosPage',
+  components: {
+    CrearEmpleadoPopup,
+  },
   data() {
     return {
       empleados: [],
+      showPopup: false,
+      isAuthenticated: false,
     };
   },
   mounted() {
@@ -42,6 +62,12 @@ export default {
       getAllEmpleados().then((response) => {
         this.empleados = response.data;
       });
+    },
+    openPopup() {
+      this.showPopup = true;
+    },
+    closePopup() {
+      this.showPopup = false;
     },
   },
 };
