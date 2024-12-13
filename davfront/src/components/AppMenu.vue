@@ -15,6 +15,7 @@
 
 <script>
 import { auth } from '@/firebase';
+import Swal from "sweetalert2";
 
 export default {
   name: 'AppMenu',
@@ -28,7 +29,16 @@ export default {
       this.$emit('openLogin');
     },
     logout() {
-      this.$emit('openLogout');
+      auth.signOut().then(() => {
+        this.isAuthenticated = false;
+        Swal.fire(
+            'Logout',
+            `Se ha desconectado correctamente`,
+            'sucess'
+        );
+      }).catch((error) => {
+        console.error('Logout error:', error);
+      });
     },
   },
   created() {

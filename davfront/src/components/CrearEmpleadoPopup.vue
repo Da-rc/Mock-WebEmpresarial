@@ -38,6 +38,7 @@
 import { getAllOficinas } from '@/axios';
 import { crearEmpleado } from '@/axios';
 import { auth } from '@/firebase';
+import Swal from "sweetalert2";
 
 export default {
   props: ['isVisible', 'onClose'],
@@ -82,8 +83,14 @@ export default {
       crearEmpleado(nuevoEmpleado).then(() => {
         this.closePopup(); // Cerrar popup después de crear el empleado
         this.$emit('refresh');
+        Swal.fire(
+            'Empleado creado',
+            `Se ha creado el empleado ${nuevoEmpleado.nombre} ${nuevoEmpleado.apellidos} correctamente`,
+            'sucess'
+        );
       }).catch((error) => {
         console.error('Error al crear el empleado:', error);
+        Swal.fire('Error', 'Hubo un problema al crear el empleado', 'error');
       });
     },
   },

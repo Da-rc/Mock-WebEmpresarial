@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Empleados</h3>
-    <button @click="openPopup" class="add-button">Añadir Empleado</button>
+    <button @click="openPopupCrear" class="add-button">Añadir Empleado</button>
     <table>
       <thead>
       <tr>
@@ -22,16 +22,16 @@
         <td>{{ empleado.oficina && empleado.oficina.provincia ? empleado.oficina.provincia : '' }}</td>
         <td>
           <button @click="editEmpleado(empleado.id)">Editar</button>
-          <button @click="deleteEmpleado(empleado.id)">Eliminar</button>
+          <button @click="borrarEmpleado(empleado)">Eliminar</button>
         </td>
       </tr>
       </tbody>
     </table>
 
     <crear-empleado-popup
-        v-if="showPopup"
-        :isVisible="showPopup"
-        :onClose="closePopup"
+        v-if="showPopupCrear"
+        :isVisible="showPopupCrear"
+        :onClose="closePopupCrear"
         @refresh="fetchEmpleados"
     />
 
@@ -39,8 +39,10 @@
 </template>
 
 <script>
-import { getAllEmpleados} from '@/axios';
+import {deleteEmpleado, getAllEmpleados} from '@/axios';
 import CrearEmpleadoPopup from '../components/CrearEmpleadoPopup.vue';
+import {auth} from "@/firebase";
+import Swal from "sweetalert2";
 
 export default {
   name: 'EmpleadosPage',
@@ -50,7 +52,7 @@ export default {
   data() {
     return {
       empleados: [],
-      showPopup: false,
+      showPopupCrear: false,
       isAuthenticated: false,
     };
   },
@@ -63,12 +65,46 @@ export default {
         this.empleados = response.data;
       });
     },
-    openPopup() {
-      this.showPopup = true;
+    openPopupCrear() {
+      this.showPopupCrear = true;
     },
-    closePopup() {
-      this.showPopup = false;
+    closePopupCrear() {
+      this.showPopupCrear = false;
     },
+    borrarEmpleado(empleado) {
+      if (!auth.currentUser) {
+        alert('Debes estar logueado para crear un empleado.');
+        return;
+      }
+
+      Swal.fire({
+        title: 'Confirmar Eliminación',
+        text: `¿Está seguro de que deseas eliminar al empleado ${empleado.nombre} ${empleado.apellidos}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          deleteEmpleado(empleado.id).then((response) => {
+            if (response.status === 200) {
+              Swal.fire(
+                  'Eliminado',
+                  `Empleado ${empleado.nombre} ${empleado.apellidos} eliminado exitosamente`,
+                  'sucess'
+              );
+              this.fetchEmpleados();
+            } else {
+              Swal.fire('Error', 'Hubo un problema al eliminar el empleado', 'error');
+            }
+          }).catch((error) => {
+            console.error("Error eliminando empleado:", error);
+            Swal.fire('Error', 'No se pudo eliminar al empleado', 'error');
+          });
+        }
+      })
+    }
   },
 };
 </script>

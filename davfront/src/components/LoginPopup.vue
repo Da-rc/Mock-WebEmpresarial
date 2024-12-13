@@ -22,6 +22,7 @@
 <script>
 import { auth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import Swal from "sweetalert2";
 
 export default {
   name: 'LoginPopup',
@@ -46,7 +47,11 @@ export default {
             const user = userCredential.user;
             console.log('logueado', user);
             this.closePopup();
-
+            Swal.fire(
+                'Login',
+                `Se ha conectado correctamente`,
+                'sucess'
+            );
           })
           .catch((error) => {
             console.error('Login error:', error.code, error.message);

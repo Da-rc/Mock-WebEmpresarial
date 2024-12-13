@@ -74,8 +74,8 @@ public class EmpleadoController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe un empleado con ese DNI");
     }
 
-    @DeleteMapping("/empleado/{id}")
-    public ResponseEntity<?> deleteEmpleado(@RequestParam int id){
+    @DeleteMapping("/deleteEmpleado/{id}")
+    public ResponseEntity<?> deleteEmpleado(@PathVariable int id){
         Boolean borrado = service.deleteEmpleado(id);
         if(borrado){
             return ResponseEntity.ok().build();
