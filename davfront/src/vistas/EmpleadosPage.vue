@@ -21,7 +21,7 @@
         <td>{{ empleado.area }}</td>
         <td>{{ empleado.oficina && empleado.oficina.provincia ? empleado.oficina.provincia : '' }}</td>
         <td>
-          <button @click="editEmpleado(empleado.id)">Editar</button>
+          <button @click="openPopupEditar(empleado)">Editar</button>
           <button @click="borrarEmpleado(empleado)">Eliminar</button>
         </td>
       </tr>
@@ -34,6 +34,13 @@
         :onClose="closePopupCrear"
         @refresh="fetchEmpleados"
     />
+    <UpdateEmpleadoPopup
+      v-if="showPopupEditar"
+      :isVisible="showPopupEditar"
+      :empleado="empleadoEditar"
+      :onClose="closePopupEditar"
+      @refresh="fetchEmpleados"
+    />
 
   </div>
 </template>
@@ -41,6 +48,7 @@
 <script>
 import {deleteEmpleado, getAllEmpleados} from '@/axios';
 import CrearEmpleadoPopup from '../components/CrearEmpleadoPopup.vue';
+import UpdateEmpleadoPopup from "@/components/UpdateEmpleadoPopup.vue";
 import {auth} from "@/firebase";
 import Swal from "sweetalert2";
 
@@ -48,12 +56,15 @@ export default {
   name: 'EmpleadosPage',
   components: {
     CrearEmpleadoPopup,
+    UpdateEmpleadoPopup,
   },
   data() {
     return {
       empleados: [],
       showPopupCrear: false,
+      showPopupEditar: false,
       isAuthenticated: false,
+      empleadoEditar: null,
     };
   },
   mounted() {
@@ -66,14 +77,22 @@ export default {
       });
     },
     openPopupCrear() {
+
       this.showPopupCrear = true;
     },
     closePopupCrear() {
       this.showPopupCrear = false;
     },
+    openPopupEditar(empleado) {
+      this.empleadoEditar = empleado;
+      this.showPopupEditar = true;
+    },
+    closePopupEditar() {
+      this.showPopupEditar = false;
+    },
     borrarEmpleado(empleado) {
       if (!auth.currentUser) {
-        alert('Debes estar logueado para crear un empleado.');
+        Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
         return;
       }
 

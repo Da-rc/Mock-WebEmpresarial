@@ -68,7 +68,7 @@ export default {
     },
     createEmpleado() {
       if (!auth.currentUser) {
-        alert('Debes estar logueado para crear un empleado.');
+        Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
         return;
       }
 
@@ -79,7 +79,6 @@ export default {
         area: this.empleado.area,
         oficina: this.empleado.oficina,
       };
-      console.log(nuevoEmpleado);
       crearEmpleado(nuevoEmpleado).then(() => {
         this.closePopup(); // Cerrar popup después de crear el empleado
         this.$emit('refresh');
