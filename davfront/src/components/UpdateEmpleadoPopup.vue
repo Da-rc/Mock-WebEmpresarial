@@ -37,7 +37,6 @@
 <script>
 
 import {getAllOficinas, updateEmpleado} from "@/axios";
-import {auth} from "@/firebase";
 import Swal from "sweetalert2";
 
 export default {
@@ -61,11 +60,6 @@ export default {
       this.onClose();
     },
     editarEmpleado() {
-      if (!auth.currentUser) {
-        Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
-        return;
-      }
-
       updateEmpleado(this.empleadoEditar).then(() => {
         this.closePopup();
         this.$emit('refresh');
@@ -75,8 +69,12 @@ export default {
             'sucess'
         );
       }).catch((error) => {
-        console.error('Error al actualizar el empleado:', error);
-        Swal.fire('Error', 'Hubo un problema al actualizar el empleado', 'error');
+        if (error.response.status === 401) {
+          Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
+        }else {
+          console.error('Error al actualizar el empleado:', error);
+          Swal.fire('Error', 'Hubo un problema al actualizar el empleado', 'error');
+        }
       })
     }
   },

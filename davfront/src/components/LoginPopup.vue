@@ -43,7 +43,7 @@ export default {
       const { email, password } = this.loginData;
 
       signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
+          .then(async (userCredential) => {
             const user = userCredential.user;
             console.log('logueado', user);
             this.closePopup();

@@ -3,12 +3,16 @@ package com.darc.daveilguard.davback.controller;
 import com.darc.daveilguard.davback.dto.EmpleadoDto;
 import com.darc.daveilguard.davback.model.Empleado;
 import com.darc.daveilguard.davback.services.EmpleadoService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +25,9 @@ public class EmpleadoController {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private FirebaseAuth firebaseAuth;
 
     @GetMapping("/empleados")
     public ResponseEntity<List<EmpleadoDto>> findAll(){
@@ -57,32 +64,66 @@ public class EmpleadoController {
     }
 
     @PostMapping("/crearEmpleado")
-    public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado){
-        Optional<Empleado> empleadoOpt = service.crearEmpleado(empleado);
-        if(empleadoOpt.isPresent()){
-            return ResponseEntity.ok().body(empleadoOpt.get());
+    public ResponseEntity<?> crearEmpleado(@RequestBody Empleado empleado, HttpServletRequest request){
+        try{
+            validateToken(request);
+
+            Optional<Empleado> empleadoOpt = service.crearEmpleado(empleado);
+            if(empleadoOpt.isPresent()){
+                return ResponseEntity.ok().body(empleadoOpt.get());
+            }
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe un empleado con ese DNI");
+        }catch (Exception e){
+            return ResponseEntity.status(401).body("Acceso denegado, token inválido");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe un empleado con ese DNI");
+
     }
 
     @PutMapping("/updateEmpleado")
-    public ResponseEntity<?> updateEmpleado(@RequestBody Empleado empleado){
-        Optional<Empleado> empleadoOpt = service.updateEmpleado(empleado);
-        if(empleadoOpt.isPresent()){
-            return ResponseEntity.ok().body(empleadoOpt.get());
+    public ResponseEntity<?> updateEmpleado(@RequestBody Empleado empleado, HttpServletRequest request){
+        try {
+            validateToken(request);
+
+            Optional<Empleado> empleadoOpt = service.updateEmpleado(empleado);
+            if(empleadoOpt.isPresent()){
+                return ResponseEntity.ok().body(empleadoOpt.get());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe un empleado con ese DNI");
+
+        }catch (Exception e){
+            return ResponseEntity.status(401).body("Acceso denegado, token inválido");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe un empleado con ese DNI");
     }
 
     @DeleteMapping("/deleteEmpleado/{id}")
-    public ResponseEntity<?> deleteEmpleado(@PathVariable int id){
-        Boolean borrado = service.deleteEmpleado(id);
-        if(borrado){
-            return ResponseEntity.ok().build();
+    public ResponseEntity<?> deleteEmpleado(@PathVariable int id, HttpServletRequest request){
+        try {
+            validateToken(request);
+
+            Boolean borrado = service.deleteEmpleado(id);
+            if(borrado){
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }catch (Exception e){
+            return ResponseEntity.status(401).body("Acceso denegado, token inválido");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    private FirebaseToken validateToken(HttpServletRequest request) throws IOException{
+        String authHeader = request.getHeader("Authorization");
 
+        if(authHeader != null &&  authHeader.startsWith("Bearer ")){
+            String idToken = authHeader.substring(7);
+            try{
+                return firebaseAuth.verifyIdToken(idToken);
+            }catch (Exception e) {
+                throw new IOException("Token no válido", e);
+            }
+        } else {
+            throw new IOException("Token no proporcionado o erroneo");
+        }
+    }
 
 }

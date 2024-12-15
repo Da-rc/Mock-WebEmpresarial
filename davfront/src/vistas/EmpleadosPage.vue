@@ -49,7 +49,6 @@
 import {deleteEmpleado, getAllEmpleados} from '@/axios';
 import CrearEmpleadoPopup from '../components/CrearEmpleadoPopup.vue';
 import UpdateEmpleadoPopup from "@/components/UpdateEmpleadoPopup.vue";
-import {auth} from "@/firebase";
 import Swal from "sweetalert2";
 
 export default {
@@ -91,11 +90,6 @@ export default {
       this.showPopupEditar = false;
     },
     borrarEmpleado(empleado) {
-      if (!auth.currentUser) {
-        Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
-        return;
-      }
-
       Swal.fire({
         title: 'Confirmar Eliminación',
         text: `¿Está seguro de que deseas eliminar al empleado ${empleado.nombre} ${empleado.apellidos}?`,
@@ -118,8 +112,12 @@ export default {
               Swal.fire('Error', 'Hubo un problema al eliminar el empleado', 'error');
             }
           }).catch((error) => {
-            console.error("Error eliminando empleado:", error);
-            Swal.fire('Error', 'No se pudo eliminar al empleado', 'error');
+            if (error.response.status === 401) {
+              Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
+            }else {
+              console.error("Error eliminando empleado:", error);
+              Swal.fire('Error', 'No se pudo eliminar al empleado', 'error');
+            }
           });
         }
       })

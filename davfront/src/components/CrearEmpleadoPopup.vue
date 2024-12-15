@@ -37,7 +37,6 @@
 <script>
 import { getAllOficinas } from '@/axios';
 import { crearEmpleado } from '@/axios';
-import { auth } from '@/firebase';
 import Swal from "sweetalert2";
 
 export default {
@@ -67,10 +66,6 @@ export default {
       this.onClose();
     },
     createEmpleado() {
-      if (!auth.currentUser) {
-        Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
-        return;
-      }
 
       const nuevoEmpleado = {
         nombre: this.empleado.nombre,
@@ -88,8 +83,12 @@ export default {
             'sucess'
         );
       }).catch((error) => {
-        console.error('Error al crear el empleado:', error);
-        Swal.fire('Error', 'Hubo un problema al crear el empleado', 'error');
+        if (error.response.status === 401) {
+          Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
+        }else{
+          console.error('Error al crear el empleado:', error);
+          Swal.fire('Error', 'Hubo un problema al crear el empleado', 'error');
+        }
       });
     },
   },
