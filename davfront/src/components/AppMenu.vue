@@ -1,15 +1,21 @@
 <template>
   <div class="menu">
       <nav>
-        <ul>
-          <li><router-link to="/">Dashboard</router-link></li>
-          <li><router-link to="/oficinas">Oficinas</router-link></li>
-          <li><router-link to="/empleados">Empleados</router-link></li>
+        <button class="hamburger" @click="toggleMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <ul :class="{ 'menu-open': menuOpen }">
+          <li><router-link to="/" @click="closeMenu">Dashboard</router-link></li>
+          <li><router-link to="/oficinas" @click="closeMenu">Oficinas</router-link></li>
+          <li><router-link to="/empleados" @click="closeMenu">Empleados</router-link></li>
         </ul>
       </nav>
-
-    <button v-if="!isAuthenticated" @click="openLoginPopup">Login</button>
-    <button v-else @click="logout">Logout</button>
+    <div class="auth-buttons">
+      <button v-if="!isAuthenticated" @click="openLoginPopup">Login</button>
+      <button v-else @click="logout">Logout</button>
+    </div>
   </div>
 </template>
 
@@ -21,7 +27,8 @@ export default {
   name: 'AppMenu',
   data() {
     return {
-      isAuthenticated: false,  // Estado para verificar si el usuario está autenticado
+      isAuthenticated: false,
+      menuOpen: false,
     };
   },
   methods: {
@@ -40,14 +47,16 @@ export default {
         console.error('Logout error:', error);
       });
     },
+    toggleMenu() {
+      this.menuOpen = !this.menuOpen;
+    },
+    closeMenu() {
+      this.menuOpen = false;
+    }
   },
   created() {
     auth.onAuthStateChanged((user) => {
-      if (user) {
-        this.isAuthenticated = true;
-      } else {
-        this.isAuthenticated = false;
-      }
+     this.isAuthenticated = !!user;
     });
   },
 };
@@ -57,36 +66,107 @@ export default {
 
 <style scoped>
 .menu {
-  background-color: #6c4675;
-  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4a4a4a;
+  padding: 10px 20px;
   color: white;
+  position: relative;
 }
 
-.menu ul {
+nav {
+  display: flex;
+  align-items: center;
+}
+
+ul {
   list-style: none;
   display: flex;
-  justify-content: space-around;
-  padding: 0;
+  gap: 20px;
   margin: 0;
+  padding: 0;
 }
 
-.menu li a {
+li a {
   color: white;
   text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
 }
 
-.menu li a:hover {
-  text-decoration: underline;
+li a:hover {
+  color: #f2a365;
 }
 
-.menu button {
-  background-color: transparent;
-  border: none;
+
+.auth-buttons button{
+  background: transparent;
   color: white;
+  border: 1px solid white;
+  border-radius: 4px;
+  padding: 5px 10px;
   cursor: pointer;
+  transition: background 0.3s, color 0.3s;
 }
 
-.menu button:hover {
-  text-decoration: underline;
+.auth-buttons button:hover {
+  background: #f2a365;
+  color: #333;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.hamburger span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 3px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+/* responsive */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  ul {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #4a4a4a;
+    width: 25%;
+    padding: 10px ;
+    text-align: left;
+  }
+
+  ul.menu-open {
+    display: flex;
+  }
+
+  .auth-buttons button {
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .auth-buttons button:hover {
+    background: #f2a365;
+    color: #333;
+  }
 }
 </style>

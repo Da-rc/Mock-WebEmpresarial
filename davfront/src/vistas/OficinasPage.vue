@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="oficinas_div">
     <h3>Oficinas</h3>
     <table>
       <thead>
@@ -44,18 +44,62 @@ export default {
 </script>
 
 <style scoped>
+.oficinas_div {
+  padding: 20px;
+  background-color: #f4f7fc;
+  min-height: 100vh;
+}
+
+h3 {
+  font-size: 2rem;
+  color: #2A3D66;
+  margin-bottom: 15px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 30px;
 }
 
 th, td {
-  padding: 8px 12px;
+  padding: 12px 15px;
   text-align: left;
   border: 1px solid #ddd;
 }
 
 th {
   background-color: #f4f4f4;
+  font-weight: bold;
+  color: #2A3D66;
+}
+
+td {
+  background-color: #fff;
+  color: #555;
+}
+
+tr {
+  transition: background-color 0.3s ease;
+}
+
+tr:hover td{
+  background-color: #f9f9f9;
+}
+
+/*responsive*/
+@media (max-width: 768px) {
+  h3 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    padding: 10px;
+  }
 }
 </style>
