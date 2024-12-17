@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: process.env.NODE_ENV === 'production' ? '/web-gestion-mock/davfront/' : '/',
+  publicPath: "/web-Gestion-mock/davfront",
 })
