@@ -27,8 +27,12 @@
             </option>
           </select>
         </div>
-        <button type="submit">Editar Empleado</button>
-        <button @click="closePopup" type="button">Cancelar</button>
+        <div class="form-buttons">
+        <button type="submit" class="edit-btn">
+          <i class="pi pi-pen-to-square" />
+          Editar Empleado</button>
+        <button @click="closePopup" type="button" class="cancel-btn">Cancelar</button>
+        </div>
       </form>
     </div>
   </div>
@@ -38,6 +42,7 @@
 
 import {getAllOficinas, updateEmpleado} from "@/axios";
 import Swal from "sweetalert2";
+import 'primeicons/primeicons.css'
 
 export default {
   props: ['isVisible', 'onClose', 'empleado'],
@@ -66,7 +71,7 @@ export default {
         Swal.fire(
             'Empleado actualizado',
             `Se ha actualizado el empleado ${this.empleadoEditar.nombre} ${this.empleadoEditar.apellidos} correctamente`,
-            'sucess'
+            'success'
         );
       }).catch((error) => {
         if (error.response.status === 401) {
@@ -96,49 +101,116 @@ export default {
 }
 
 .popup-content {
-  background-color: white;
+  background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   width: 80%;
-  max-width: 500px;
+  max-width: 450px;
+  animation: fadeIn 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+h3 {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 600;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  font-weight: 600;
+  color: #555;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #6c4675;
+  box-shadow: 0 0 3px rgba(108, 70, 117, 0.3);
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 button {
   padding: 10px 20px;
-  background-color: #6c4675;
-  color: white;
+  font-size: 1rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #5a3b62;
+.edit-btn {
+  background-color: #333;
+  color: #fff;
 }
 
-button[type="button"] {
-  background-color: #ccc;
+.edit-btn:hover {
+  background-color: #2A3D66;
 }
 
-button[type="button"]:hover {
-  background-color: #bbb;
+.cancel-btn {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #d1d1d1;
+}
+
+/* responsive */
+@media (max-width: 480px) {
+  .popup-content {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .popup-title {
+    font-size: 1.2rem;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
 }
 </style>

@@ -2,12 +2,28 @@
   <div>
     <h3>Empleados</h3>
     <div class="divBusqueda">
+      <i id="icono-lupa" class="pi pi-search" />
       <input
           type="text"
              id="barraBusqueda"
              @input="buscarEmpleados"
              placeholder="Buscar empleados por nombre, DNI, etc."
              v-model="txtBusqueda" />
+    </div>
+
+    <div class="div-topTabla">
+    <div class="pagination-controls">
+      <label for="itemsPerPage">Empleados por página:</label>
+      <select v-model="itemsPerPage" id="itemsPerPage" @change="changePage(1)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+      </select>
+    </div>
+
+    <button @click="openPopupCrear" class="add-button">
+      <i class="pi pi-plus-circle" />
+      Añadir empleado
+    </button>
     </div>
     <div class="tabla-wrapper">
       <table class="tabla-responsive">
@@ -22,7 +38,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="empleado in empleados" :key="empleado.id">
+        <tr v-for="empleado in paginatedEmpleados" :key="empleado.id">
           <td>{{ empleado.nombre }}</td>
           <td>{{ empleado.apellidos }}</td>
           <td>{{ empleado.dni }}</td>
@@ -40,10 +56,19 @@
         </tbody>
       </table>
     </div>
-    <button @click="openPopupCrear" class="add-button">
-      <i class="pi pi-plus-circle" />
-      Añadir empleado
-    </button>
+
+    <div class="pagination">
+      <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="changePage(page)"
+          :class="{ active: currentPage === page }"
+      >
+        {{ page }}
+      </button>
+    </div>
+
+    <!-- popups -->
     <crear-empleado-popup
         v-if="showPopupCrear"
         :isVisible="showPopupCrear"
@@ -69,8 +94,6 @@ import Swal from "sweetalert2";
 import 'primeicons/primeicons.css'
 
 
-
-
 export default {
   name: 'EmpleadosPage',
   components: {
@@ -80,12 +103,24 @@ export default {
   data() {
     return {
       empleados: [],
+      currentPage: 1,
+      itemsPerPage: 5,
       showPopupCrear: false,
       showPopupEditar: false,
-      isAuthenticated: false,
       empleadoEditar: null,
       txtBusqueda: null,
     };
+  },
+  computed: {
+    totalPages() {
+      console.log("Nuevo valor de itemsPerPage:", this.itemsPerPage);
+      return Math.ceil(this.empleados.length / this.itemsPerPage);
+    },
+    paginatedEmpleados() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.empleados.slice(startIndex, endIndex);
+    },
   },
   mounted() {
     this.fetchEmpleados();
@@ -93,11 +128,16 @@ export default {
   methods: {
     fetchEmpleados() {
       getAllEmpleados().then((response) => {
-        this.empleados = response.data;
+        this.empleados = response.data.sort((a, b) => {
+          return a.apellidos.localeCompare(b.apellidos);
+        });
+        this.currentPage = 1;
       });
     },
+    changePage(page) {
+      this.currentPage = page;
+    },
     openPopupCrear() {
-
       this.showPopupCrear = true;
     },
     closePopupCrear() {
@@ -116,6 +156,7 @@ export default {
       } else {
         search(this.txtBusqueda).then((response) => {
           this.empleados = response.data;
+          this.currentPage = 1;
         })
       }
     },
@@ -135,7 +176,7 @@ export default {
               Swal.fire(
                   'Eliminado',
                   `Empleado ${empleado.nombre} ${empleado.apellidos} eliminado exitosamente`,
-                  'sucess'
+                  'success'
               );
               this.fetchEmpleados();
             } else {
@@ -143,7 +184,7 @@ export default {
             }
           }).catch((error) => {
             if (error.response.status === 401) {
-              Swal.fire('Alert', 'Debe estar logueado para ejecutar esta acción', 'Alert');
+              Swal.fire('Warning', 'Debe estar logueado para ejecutar esta acción', 'warning');
             }else {
               console.error("Error eliminando empleado:", error);
               Swal.fire('Error', 'No se pudo eliminar al empleado', 'error');
@@ -162,6 +203,10 @@ h3 {
   color: #2A3D66;
 }
 
+#icono-lupa {
+  margin-right: 5px;
+}
+
 .divBusqueda input {
   padding: 8px 12px;
   margin-bottom: 20px;
@@ -169,6 +214,52 @@ h3 {
   max-width: 300px;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.div-topTabla{
+  display: flex;
+  justify-content: space-between;
+}
+
+.pagination-controls {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-controls label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.pagination-controls select {
+  padding: 8px;
+  font-size: 1rem;
+  margin: 0 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.pagination button {
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  margin: 0 5px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #2A3D66;
+  color: white;
+  font-weight: bold;
 }
 
 .tabla-wrapper {
@@ -237,6 +328,39 @@ button:hover {
     font-size: 1.5rem;
   }
 
+  .pagination-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pagination-controls select {
+    width: 50%;
+    margin: 10px 0;
+  }
+
+  .pagination-controls label {
+    font-size: 0.8rem;
+  }
+
+  .pagination {
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+
+  .pagination button {
+    width: 25%;
+    margin-top: 5px;
+  }
+
+  .pagination-controls span {
+    margin-top: 5px;
+    text-align: left;
+  }
+
+  .add-button {
+    font-size: 0.9rem;
+  }
+
   table {
     font-size: 14px;
   }
@@ -251,7 +375,7 @@ button:hover {
   }
 
   .add-button {
-    width: 100%;
+    width: 40%;
     padding: 12px;
   }
 

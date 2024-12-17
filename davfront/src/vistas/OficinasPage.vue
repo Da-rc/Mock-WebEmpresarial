@@ -36,7 +36,9 @@ export default {
   methods: {
     fetchOficinas() {
       getAllOficinas().then((response) => {
-        this.oficinas = response.data;
+        this.oficinas = response.data.sort((a, b) =>{
+          return a.provincia.localeCompare(b.provincia)
+        });
       });
     },
   },

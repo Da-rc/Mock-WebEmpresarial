@@ -1,7 +1,7 @@
 <template>
   <div class="popup-login" @click.self="closePopup">
-    <div class="popup">
-      <h3>Login</h3>
+    <div class="popup-content">
+      <h3>Iniciar Sesión</h3>
       <form @submit.prevent="validateLogin">
         <div class="form-group">
           <label for="email">Email</label>
@@ -43,9 +43,7 @@ export default {
       const { email, password } = this.loginData;
 
       signInWithEmailAndPassword(auth, email, password)
-          .then(async (userCredential) => {
-            const user = userCredential.user;
-            console.log('logueado', user);
+          .then(() => {
             this.closePopup();
             Swal.fire(
                 'Login',
@@ -77,27 +75,32 @@ export default {
   z-index: 1000;
 }
 
-.popup {
+.popup-content {
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   max-width: 400px;
   width: 90%;
+  text-align: center;
 }
 
-.popup h3 {
-  margin-bottom: 20px;
-  text-align: center;
+.popup-content h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.5rem;
 }
 
 .form-group {
   margin-bottom: 15px;
+  text-align: left;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  font-weight: 600;
+  color: #555;
 }
 
 .form-group input {
@@ -110,27 +113,72 @@ export default {
 .submit-button {
   width: 100%;
   padding: 10px;
-  background-color: #6c4675;
-  color: white;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #6c4675;
+  outline: none;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.submit-button,
+.close-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
+}
+
+.submit-button {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
 }
 
 .submit-button:hover {
-  background-color: #5a3b62;
+  background-color: #2A3D66;
 }
 
 .close-button {
-  margin-top: 10px;
-  padding: 5px 10px;
   background-color: #ccc;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  color: #333;
 }
 
 .close-button:hover {
   background-color: #bbb;
 }
+
+/* responsive */
+@media (max-width: 480px) {
+  .popup-content {
+    padding: 15px;
+    border-radius: 8px;
+  }
+  .popup-content h3 {
+    font-size: 1.3rem;
+  }
+  .form-group input {
+    font-size: 0.9rem;
+  }
+  .submit-button,
+  .close-button {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
+
 </style>
