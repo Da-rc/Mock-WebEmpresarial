@@ -22,6 +22,7 @@
 
 <script>
 import { getAllOficinas } from '@/axios';
+import Swal from "sweetalert2";
 
 export default {
   name: 'OficinasPage',
@@ -38,6 +39,12 @@ export default {
       getAllOficinas().then((response) => {
         this.oficinas = response.data.sort((a, b) =>{
           return a.provincia.localeCompare(b.provincia)
+        });
+      }).catch(() => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error con la conexión. Por favor, inténtalo nuevamente.'
         });
       });
     },

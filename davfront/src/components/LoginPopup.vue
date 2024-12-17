@@ -50,11 +50,9 @@ export default {
                 `Se ha conectado correctamente`,
                 'sucess'
             );
-          })
-          .catch((error) => {
-            console.error('Login error:', error.code, error.message);
+          }).catch(() => {
             this.loginError = 'Invalid email or password. Please try again.';
-          });
+      })
     },
   },
 };

@@ -132,6 +132,11 @@ export default {
           return a.apellidos.localeCompare(b.apellidos);
         });
         this.currentPage = 1;
+      }).catch(() => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ocurrió un error con la conexión. Por favor, inténtalo nuevamente.'});
       });
     },
     changePage(page) {
