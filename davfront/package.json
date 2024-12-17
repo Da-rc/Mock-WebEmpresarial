@@ -6,6 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "start": "serve -s dist",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@quasar/cli": "^2.4.1",
@@ -15,6 +17,7 @@
     "font-awesome": "^4.7.0",
     "oh-vue-icons": "^1.0.0-rc3",
     "primeicons": "^7.0.0",
+    "serve": "^14.2.4",
     "sweetalert2": "^11.14.5",
     "vue": "^3.2.13",
     "vue-router": "^4.5.0"
