@@ -205,7 +205,9 @@ export default {
 <style scoped>
 
 h3 {
+  font-size: 2rem;
   color: #2A3D66;
+  margin-bottom: 15px;
 }
 
 #icono-lupa {

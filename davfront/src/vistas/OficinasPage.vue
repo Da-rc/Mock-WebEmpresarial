@@ -78,14 +78,8 @@ th, td {
 }
 
 th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-  color: #2A3D66;
-}
-
-td {
-  background-color: #fff;
-  color: #555;
+  color: #ddd;
+  background-color: #2A3D66;
 }
 
 tr {
