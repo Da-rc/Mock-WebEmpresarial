@@ -1,11 +1,13 @@
-## Work in progress 
+## Mock de web empresarial
+
+Proyecto de web de gestión interna empresarial que muestra información diferentes vistas: Una principal, una tabla con información de las oficinas y una última tabla con información de los empleados que permite agregar, editar o eliminar empleados.
+
+## Desarrollo
+El back está desarrollado en Java y SpringBoot siguiendo una arquitectura hexagonal para mejorar la escalabilidad y el mantenimiento. La base de datos usada es PostgreSQL en Neon.tech.
+Para la autenticación he implementado el login mediante Firebase Authenticator para que las peticiones POST, PUT y DELETE solo puedan ser realizadas por usuarios logueados.
+El front está desarrollado en Vue.js para crear un interfaz funcional que permite una visualización clara de los datos
+El sistema se encuentre desplegado en Railway
+
+Link a la web: [web](https://mock-webempresarial-production.up.railway.app/)
 
 
-Proyecto de web sencilla de gestión interna que muestra información sobre las diferentes oficinas de una empresa y sus empleados. La web permite ver la información de empleados y oficinas sin loguear (datos falsos, por supuesto) y a usuarios logueados le permite editar, eliminar y crear nuevos empleados.
-El objetivo del desarrollo de esta web es trabajar diferentes frameworks de back y front, las conexiones entre sí y con base de datos.
-
-Back desarrollado en Java, framework Spring y conexión JPA a base de datos PostgreSQL, siguiendo una arquitectura hexagonal.
-
-Front desarrollado con framework Vue.js y JavaScript.
-
-Firebase Authenticator para el logueo.
