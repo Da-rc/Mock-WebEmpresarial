@@ -8,6 +8,6 @@ Para la autenticación he implementado el login mediante Firebase Authenticator 
 El front está desarrollado en Vue.js para crear un interfaz funcional que permite una visualización clara de los datos
 El sistema se encuentre desplegado en Railway
 
-Link a la web: [web](mock-webempresarial-production.up.railway.app)
+Link a la web: [web](https://mock-webempresarial-production.up.railway.app/)
 
 
