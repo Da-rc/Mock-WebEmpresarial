@@ -2,7 +2,7 @@
   "name": "davfront",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/Web-Gestion-mock/davfront",
+  "homepage": "/Da-rc.github.io/davfront",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
