@@ -4,7 +4,7 @@
     <table>
       <thead>
       <tr>
-        <th>Provincia</th>
+        <th>Ciudad</th>
         <th>País</th>
         <th>Número de Empleados</th>
       </tr>
