@@ -2,7 +2,7 @@
 <template>
   <div class="dashboard-div">
     <h2>{{ pageTitle }}</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida dui lacinia aliquam consequat.
+    <p>1Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas gravida dui lacinia aliquam consequat.
       Proin aliquam ex nec consequat scelerisque. Integer lacus ante, tristique maximus turpis vitae, tristique congue ex.
       Sed ultrices erat massa, vitae porttitor turpis ultricies id. Pellentesque dapibus urna a malesuada ullamcorper. Duis at euismod tortor.
       Sed at eleifend mauris. Aliquam imperdiet, leo quis condimentum scelerisque, metus turpis sodales lorem, eu sodales arcu lacus quis elit.
