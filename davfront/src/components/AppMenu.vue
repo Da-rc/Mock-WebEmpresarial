@@ -13,6 +13,7 @@
         </ul>
       </nav>
     <div class="auth-buttons">
+        <a href="https://github.com/Da-rc/Mock-WebEmpresarial" target="_blank"><i class="pi pi-github" style="color: white"/></a>
       <button v-if="!isAuthenticated" @click="openLoginPopup">Login</button>
       <button v-else @click="logout">Logout</button>
     </div>
@@ -99,6 +100,15 @@ li a:hover {
   color: #f2a365;
 }
 
+.auth-buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.auth-buttons a {
+    padding: 5px 10px;
+}
 
 .auth-buttons button{
   background: transparent;
